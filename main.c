@@ -4,18 +4,30 @@
 #include <SDL2/SDL_ttf.h>
 #include <SDL2/SDL_video.h>
 
+struct Grid {
+  int x;
+  int y;
+};
+
 int main() {
   SDL_Window *window;
   SDL_Renderer *renderer;
+  struct Grid grid = {10, 10};
 
-  SDL_Init(SDL_INIT_VIDEO);
+  if (SDL_Init(SDL_INIT_VIDEO) == -1) {
+    printf("SDL could not initialize! Error: %s\n", SDL_GetError());
+    SDL_Quit();
+    return 1;
+  }
+
+  SDL_CreateWindowAndRenderer(800, 800, 0, &window, &renderer);
 
   if (TTF_Init() == -1) {
     printf("TTF could not initialize! TTF_Error: %s\n", TTF_GetError());
     SDL_Quit();
     return 1;
   }
-  SDL_CreateWindowAndRenderer(640, 480, 0, &window, &renderer);
+
   TTF_Font *font = TTF_OpenFont(
       "/usr/share/fonts/liberation/LiberationSans-Regular.ttf", 24);
   if (!font) {
@@ -26,6 +38,7 @@ int main() {
     SDL_Quit();
     return 1;
   }
+
   SDL_Color textColor = {255, 255, 255, 255};
   SDL_Surface *textSurface =
       TTF_RenderText_Solid(font, "Hello world!", textColor);
@@ -64,7 +77,6 @@ int main() {
   SDL_DestroyWindow(window);
   TTF_Quit();
   SDL_Quit();
-  SDL_Delay(5000);
   SDL_DestroyWindow(window);
   SDL_Quit();
 
